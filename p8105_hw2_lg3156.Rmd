@@ -113,7 +113,7 @@ pols_month=
   separate(mon, into=c("year", "month", "day"),sep="-") %>% 
   mutate_at(vars(month),as.numeric) %>% 
   mutate(month=month.name[month]) %>% 
-  mutate(president=ifelse(prez_gop==1,"gop","dem")) %>% 
+  mutate(president=ifelse(prez_gop >=1,"gop","dem")) %>% 
   select(-prez_dem,-prez_gop,-day)
   
          
