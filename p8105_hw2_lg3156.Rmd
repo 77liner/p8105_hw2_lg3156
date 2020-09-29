@@ -61,3 +61,41 @@ precip_df=
 ```
 
 This dataset contains information from the Mr. Trashwhell collector in Baltimore, Maryland. As trash enters the harbor, the trashwhell collect the trash, and stores it in a dumpster. The dataset contains information on year, month, and trash collected, include some specific kinds of trash. There are a total of `r nrow(trashwhell_df)` rows in our final dataset. Additional data sheet include month precipitation data. There are a total of `r nrow(precip_df)` rows in month precipitation dataset.The total precipitation in 2018 is `r sum(pull(precip_2018,total))`. The median number of sports balls in a dumpster in 2017 is `r median(pull(select(filter(trashwhell_df, year == 2017),sports_balls),sports_balls))`.
+
+# Problem 2
+
+Read NYC Transit data.
+```{r}
+transit_df=
+  read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") %>% 
+  janitor::clean_names() %>% 
+  select(line, station_name, station_latitude, station_longitude, route1:route11, entry, vending, entrance_type, ada) %>% 
+  mutate(entry= recode(entry, YES= TRUE, NO= FALSE))
+```
+This is a NYC transit dataset. It contains following variables:`r names(transit_df)`. My data cleaning steps:1) I use janitor::clean_names to clean up variables names and convert them to lower snake case.2) I select important variables and remove others. The dimension of this dataset is `r nrow(transit_df)`×`r ncol(transit_df)`.
+
+Answer the following questions:
+
+(1) There are `r nrow(distinct(transit_df,line,station_name))`  distinct stations.
+
+(2) `r filter(transit_df, ada=="TRUE") %>% distinct(line,station_name) %>% nrow()` distinct stations are ADA compliant.
+
+(3) The proportion of distinct station entrances / exits without vending allow entrance is `r filter(transit_df, entry=="TRUE" & vending== "NO") %>% distinct(line,station_name) %>% nrow()/nrow(distinct(filter(transit_df, vending== "NO") ,line,station_name))`.
+
+```{r}
+reformat_data = 
+  transit_df %>% 
+  mutate_at(vars(route1:route11),as.factor) %>% 
+  pivot_longer(
+    route1:route11,
+    names_to= "route_name",
+    names_prefix = "route",
+    values_to ="route_number") %>% 
+  drop_na(route_number)
+  
+```
+
+(1) `r filter(reformat_data, route_number=="A") %>% distinct(line,station_name) %>% nrow()` distinct stations serve the A train.
+
+(2) Of the stations that serve the A train, `r filter(reformat_data, route_number=="A"& ada=="TRUE") %>% distinct(line,station_name) %>% nrow()` are ADA compliant.
+
