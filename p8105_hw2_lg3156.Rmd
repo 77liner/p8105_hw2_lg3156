@@ -82,7 +82,7 @@ Answer the following questions:
 
 (1) There are `r nrow(distinct(transit_df,line,station_name))`  distinct stations.
 
-(2) `r filter(transit_df, ada=="TRUE") %>% nrow()` distinct stations are ADA compliant.
+(2) `r filter(transit_df, ada=="TRUE") %>% distinct(line,station_name) %>% nrow()` distinct stations are ADA compliant.
 
 (3) The proportion of distinct station entrances / exits without vending allow entrance is `r nrow(filter(transit_df, entry=="TRUE" & vending=="NO"))/ nrow(filter(transit_df, vending== "NO"))` .
 
