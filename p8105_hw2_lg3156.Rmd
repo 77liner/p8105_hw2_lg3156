@@ -1,0 +1,6 @@
+---
+title: "p8105_hw2"
+author: "Liner Ge"
+date: "2020/9/29"
+output: github_document
+---
